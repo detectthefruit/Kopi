@@ -57,6 +57,15 @@ kopi update
 
 This will automatically uninstall and reinstall the latest version of the extension.
 
+## What separates Kopi from Java and Python
+
+Kopi is designed to be both easy to write and expressive:
+
+- Clean, lightweight syntax that avoids Java's boilerplate while still supporting familiar statement blocks.
+- Built-in collection helpers like `range`, `zip`, `enumerate`, and `sorted` make common tasks concise.
+- Native pattern matching with `match` / `case` gives you powerful branching without verbose code.
+- Optional semicolons let you write readable code line-by-line, while the interpreter still understands compact expressions.
+
 ## What you can write in Kopi
 
 ### Values

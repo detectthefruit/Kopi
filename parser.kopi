@@ -273,11 +273,14 @@ def parse_expression(tokens, i, min_prec=1):
         lhs = ("binop", op, lhs, rhs)
 
     if i < len(tokens) and tokens[i] == "if":
-        condition, i = parse_expression(tokens, i + 1)
-        if tokens[i] != "else":
-            raise SyntaxError("Expected 'else' in ternary expression")
-        else_val, i = parse_expression(tokens, i + 1)
-        lhs = ("ternary", lhs, condition, else_val)
+        saved_i = i
+        condition, j = parse_expression(tokens, i + 1)
+        if j < len(tokens) and tokens[j] == "else":
+            else_val, k = parse_expression(tokens, j + 1)
+            lhs = ("ternary", lhs, condition, else_val)
+            i = k
+        else:
+            i = saved_i
 
     return lhs, i
 

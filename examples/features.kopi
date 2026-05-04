@@ -85,6 +85,11 @@ print("\n--- String Methods ---")
 text = "  hello world  "
 print("Original: '", text, "'")
 print("strip(): '", strip(text), "'")
+print("\n--- Zip and Enumerate ---")
+letters = ["a", "b", "c"]
+numbers = [1, 2, 3]
+print("Zipped:", zip(letters, numbers))
+print("Enumerated:", enumerate(letters, 1))
 
 print("startswith('hello'): ", startswith(text, "hello"))
 print("endswith('world  '): ", endswith(text, "world  "))

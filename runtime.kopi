@@ -295,6 +295,8 @@ def evaluate(node, local_vars, global_vars, functions, module_cache, load_module
         if op == "+":
             if isinstance(left, tuple) and isinstance(right, tuple):
                 return left + right
+            if isinstance(left, str) or isinstance(right, str):
+                return str(left) + str(right)
             return left + right
         if op == "-":
             return left - right
@@ -509,6 +511,18 @@ def evaluate(node, local_vars, global_vars, functions, module_cache, load_module
             if len(args) != 1:
                 raise RuntimeError("all() takes exactly one argument")
             return all(is_truthy(item) for item in args[0])
+
+        if name == "zip":
+            if len(args) < 1:
+                raise RuntimeError("zip() takes one or more arguments")
+            return [tuple(item for item in group) for group in zip(*args)]
+
+        if name == "enumerate":
+            if len(args) not in (1, 2):
+                raise RuntimeError("enumerate() takes one or two arguments")
+            seq = args[0]
+            start = args[1] if len(args) == 2 else 0
+            return [tuple(pair) for pair in enumerate(seq, start)]
 
         if name == "abs":
             if len(args) != 1:
