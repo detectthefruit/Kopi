@@ -40,8 +40,19 @@ from runtime import run
 
 def main():
     import sys
-    if len(sys.argv) != 2:
-        print("Usage: python3 main.kopi <source_file>")
+    import subprocess
+    import os
+
+    if len(sys.argv) < 2:
+        print("Usage: python3 main.kopi <source_file> | update")
+        return
+
+    if sys.argv[1] == "update":
+        script_path = os.path.join(os.path.dirname(__file__), "scripts", "update-extension.sh")
+        try:
+            subprocess.run([script_path], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error updating extension: {e}")
         return
 
     source_file = sys.argv[1]

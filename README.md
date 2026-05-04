@@ -37,6 +37,22 @@ Then you can run:
 kopi run path/to/file.kopi
 ```
 
+### Updating the VS Code extension
+
+To update the Kopi language support extension in VS Code:
+
+```bash
+python3 main.kopi update
+```
+
+Or if you have `kopi` in your PATH:
+
+```bash
+kopi update
+```
+
+This will automatically uninstall and reinstall the latest version of the extension.
+
 ## What you can write in Kopi
 
 ### Values
