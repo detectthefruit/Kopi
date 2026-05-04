@@ -1,0 +1,22 @@
+print("=== Math Functions ===")
+print("sqrt(16) =", math_sqrt(16))
+print("pow(2, 8) =", math_pow(2, 8))
+print("floor(3.7) =", math_floor(3.7))
+print("ceil(3.2) =", math_ceil(3.2))
+
+print("")
+print("=== Random Functions ===")
+print("rand():", random_rand())
+print("int(1, 10):", random_int(1, 10))
+print("choice([5, 10, 15]):", random_choice([5, 10, 15]))
+
+print("")
+print("=== Type Hints (parsed but not enforced) ===")
+let x: number = 42
+print("x =", x)
+
+def multiply(a: number, b: number) -> number {
+    return a * b
+}
+
+print("multiply(6, 7) =", multiply(6, 7))

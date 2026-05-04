@@ -100,7 +100,15 @@ def parse_statement(tokens, i):
         while i < len(tokens) and tokens[i] == ",":
             names.append(tokens[i + 1])
             i += 2
-        if tokens[i] != "=":
+        if i < len(tokens) and tokens[i] == ":":
+            i += 1
+            skip_type = tokens[i]
+            i += 1
+            while i < len(tokens) and tokens[i] in ("[", "]", "?"):
+                i += 1
+                if i < len(tokens) and tokens[i].isidentifier():
+                    i += 1
+        if i >= len(tokens) or tokens[i] != "=":
             raise SyntaxError("Expected '=' after variable name")
         expr, i = parse_expression(tokens, i + 1)
         if i < len(tokens) and tokens[i] == ";":
@@ -128,13 +136,31 @@ def parse_statement(tokens, i):
         while tokens[i] != ")":
             param_name = tokens[i]
             i += 1
+            if i < len(tokens) and tokens[i] == ":":
+                i += 1
+                skip_type = tokens[i]
+                i += 1
+                while i < len(tokens) and tokens[i] in ("[", "]", "?"):
+                    i += 1
+                    if i < len(tokens) and tokens[i].isidentifier():
+                        i += 1
             if i < len(tokens) and tokens[i] == "=":
                 default_val, i = parse_expression(tokens, i + 1)
                 defaults[param_name] = default_val
             if i < len(tokens) and tokens[i] == ",":
                 i += 1
             params.append(param_name)
-        body, i = parse_block(tokens, i + 1)
+        i += 1
+        if i < len(tokens) and tokens[i] == "-":
+            if i + 1 < len(tokens) and tokens[i + 1] == ">":
+                i += 2
+                skip_return = tokens[i]
+                i += 1
+                while i < len(tokens) and tokens[i] in ("[", "]", ",", "?"):
+                    i += 1
+                    if i < len(tokens) and tokens[i].isidentifier():
+                        i += 1
+        body, i = parse_block(tokens, i)
         return ("def", name, params, body, defaults if defaults else {}), i
 
     if token == "if":
@@ -377,6 +403,9 @@ def parse_primary(tokens, i):
 
     if token == "false":
         return ("bool", False), i + 1
+
+    if token == "none":
+        return ("none", None), i + 1
 
     if token.isidentifier():
         expr = ("var", token)

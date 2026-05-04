@@ -1,0 +1,2 @@
+print("Testing math functions:")
+print(math_sqrt(16))

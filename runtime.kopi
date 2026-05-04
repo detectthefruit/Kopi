@@ -238,6 +238,16 @@ def execute_block(block, local_vars, global_vars, functions, module_cache, load_
         execute(statement, local_vars, global_vars, functions, module_cache, load_module)
 
 
+def call_kopi_function(fn_value, args, module_cache, load_module):
+    _, params, body, fn_globals, fn_functions = fn_value
+    call_vars = {param: arg for param, arg in zip(params, args)}
+    try:
+        execute_block(body, call_vars, fn_globals, fn_functions, module_cache, load_module)
+    except ReturnValue as return_value:
+        return return_value.value
+    return None
+
+
 def evaluate(node, local_vars, global_vars, functions, module_cache, load_module):
     kind = node[0]
 
@@ -271,6 +281,14 @@ def evaluate(node, local_vars, global_vars, functions, module_cache, load_module
             return local_vars[name]
         if name in global_vars:
             return global_vars[name]
+        if name in functions:
+            func_info = functions[name]
+            if len(func_info) == 3:
+                params, body, defaults = func_info
+            else:
+                params, body = func_info
+                defaults = {}
+            return ("kopi_fn", params, body, global_vars, functions)
         raise NameError(f"Undefined variable '{name}'")
 
     if kind == "attr":
@@ -511,6 +529,73 @@ def evaluate(node, local_vars, global_vars, functions, module_cache, load_module
             if len(args) != 1:
                 raise RuntimeError("all() takes exactly one argument")
             return all(is_truthy(item) for item in args[0])
+
+        if name == "map":
+            if len(args) != 2:
+                raise RuntimeError("map() takes exactly two arguments")
+            fn_value, iterable = args
+            if not isinstance(iterable, (list, tuple)):
+                raise RuntimeError("map() requires a list or tuple")
+            if not isinstance(fn_value, tuple) or fn_value[0] != "kopi_fn":
+                raise RuntimeError("map() requires a Kopi function")
+            return [call_kopi_function(fn_value, [item], module_cache, load_module) for item in iterable]
+
+        if name == "filter":
+            if len(args) != 2:
+                raise RuntimeError("filter() takes exactly two arguments")
+            fn_value, iterable = args
+            if not isinstance(iterable, (list, tuple)):
+                raise RuntimeError("filter() requires a list or tuple")
+            if not isinstance(fn_value, tuple) or fn_value[0] != "kopi_fn":
+                raise RuntimeError("filter() requires a Kopi function")
+            result = []
+            for item in iterable:
+                keep = call_kopi_function(fn_value, [item], module_cache, load_module)
+                if is_truthy(keep):
+                    result.append(item)
+            return result
+
+        if name == "math_sqrt":
+            if len(args) != 1:
+                raise RuntimeError("math_sqrt() takes exactly one argument")
+            import math
+            return math.sqrt(args[0])
+
+        if name == "math_pow":
+            if len(args) != 2:
+                raise RuntimeError("math_pow() takes exactly two arguments")
+            import math
+            return math.pow(args[0], args[1])
+
+        if name == "math_floor":
+            if len(args) != 1:
+                raise RuntimeError("math_floor() takes exactly one argument")
+            import math
+            return math.floor(args[0])
+
+        if name == "math_ceil":
+            if len(args) != 1:
+                raise RuntimeError("math_ceil() takes exactly one argument")
+            import math
+            return math.ceil(args[0])
+
+        if name == "random_rand":
+            if len(args) != 0:
+                raise RuntimeError("random_rand() takes no arguments")
+            import random
+            return random.random()
+
+        if name == "random_int":
+            if len(args) != 2:
+                raise RuntimeError("random_int() takes exactly two arguments")
+            import random
+            return random.randint(args[0], args[1])
+
+        if name == "random_choice":
+            if len(args) != 1:
+                raise RuntimeError("random_choice() takes exactly one argument")
+            import random
+            return random.choice(args[0])
 
         if name == "zip":
             if len(args) < 1:

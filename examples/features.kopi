@@ -91,6 +91,14 @@ numbers = [1, 2, 3]
 print("Zipped:", zip(letters, numbers))
 print("Enumerated:", enumerate(letters, 1))
 
+print("--- Map and Filter ---")
+def is_even(n) {
+    return n % 2 == 0
+}
+let nums = [1, 2, 3, 4, 5, 6]
+print("Even numbers:", filter(is_even, nums))
+print("Map to bools:", map(is_even, nums))
+
 print("startswith('hello'): ", startswith(text, "hello"))
 print("endswith('world  '): ", endswith(text, "world  "))
 

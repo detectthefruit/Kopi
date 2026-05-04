@@ -1,0 +1,2 @@
+print("sqrt(16) =", math_sqrt(16))
+print("pow(2, 8) =", math_pow(2, 8))
