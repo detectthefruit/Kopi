@@ -273,7 +273,12 @@ def evaluate(node, local_vars, global_vars, functions, module_cache, load_module
         return [evaluate(item, local_vars, global_vars, functions, module_cache, load_module) for item in node[1]]
 
     if kind == "dict":
-        return {key: evaluate(value, local_vars, global_vars, functions, module_cache, load_module) for key, value in node[1]}
+        result = {}
+        for key, value in node[1]:
+            if not isinstance(key, str):
+                key = evaluate(key, local_vars, global_vars, functions, module_cache, load_module)
+            result[key] = evaluate(value, local_vars, global_vars, functions, module_cache, load_module)
+        return result
 
     if kind == "var":
         name = node[1]
@@ -596,6 +601,90 @@ def evaluate(node, local_vars, global_vars, functions, module_cache, load_module
                 raise RuntimeError("random_choice() takes exactly one argument")
             import random
             return random.choice(args[0])
+
+        if name == "args":
+            if len(args) != 0:
+                raise RuntimeError("args() takes no arguments")
+            return sys.argv[1:]
+
+        if name == "env":
+            if len(args) == 1:
+                return os.getenv(str(args[0]))
+            if len(args) == 2:
+                return os.getenv(str(args[0]), str(args[1]))
+            raise RuntimeError("env() takes one or two arguments")
+
+        if name == "json_parse":
+            if len(args) != 1:
+                raise RuntimeError("json_parse() takes exactly one argument")
+            import json
+            return json.loads(str(args[0]))
+
+        if name == "json_stringify":
+            if len(args) != 1:
+                raise RuntimeError("json_stringify() takes exactly one argument")
+            import json
+            return json.dumps(args[0])
+
+        if name == "time_ms":
+            if len(args) != 0:
+                raise RuntimeError("time_ms() takes no arguments")
+            import time
+            return int(time.time() * 1000)
+
+        if name == "sleep":
+            if len(args) != 1:
+                raise RuntimeError("sleep() takes exactly one argument")
+            import time
+            time.sleep(args[0])
+            return None
+
+        if name == "http_get":
+            if len(args) != 1:
+                raise RuntimeError("http_get() takes exactly one argument")
+            import urllib.request
+            with urllib.request.urlopen(str(args[0])) as response:
+                return response.read().decode('utf-8')
+
+        if name == "parallel_map":
+            if len(args) != 2:
+                raise RuntimeError("parallel_map() takes exactly two arguments")
+            fn_value, iterable = args
+            if not isinstance(iterable, (list, tuple)):
+                raise RuntimeError("parallel_map() requires a list or tuple")
+            if not isinstance(fn_value, tuple) or fn_value[0] != "kopi_fn":
+                raise RuntimeError("parallel_map() requires a Kopi function")
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                futures = [executor.submit(call_kopi_function, fn_value, [item], module_cache, load_module) for item in iterable]
+                return [future.result() for future in futures]
+
+        if name == "parallel_filter":
+            if len(args) != 2:
+                raise RuntimeError("parallel_filter() takes exactly two arguments")
+            fn_value, iterable = args
+            if not isinstance(iterable, (list, tuple)):
+                raise RuntimeError("parallel_filter() requires a list or tuple")
+            if not isinstance(fn_value, tuple) or fn_value[0] != "kopi_fn":
+                raise RuntimeError("parallel_filter() requires a Kopi function")
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                futures = [executor.submit(call_kopi_function, fn_value, [item], module_cache, load_module) for item in iterable]
+                result = []
+                for item, future in zip(iterable, futures):
+                    if is_truthy(future.result()):
+                        result.append(item)
+                return result
+
+        if name == "path_join":
+            if len(args) < 1:
+                raise RuntimeError("path_join() takes one or more arguments")
+            return os.path.join(*(str(arg) for arg in args))
+
+        if name == "path_exists":
+            if len(args) != 1:
+                raise RuntimeError("path_exists() takes exactly one argument")
+            return os.path.exists(str(args[0]))
 
         if name == "zip":
             if len(args) < 1:

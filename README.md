@@ -84,15 +84,28 @@ Kopi is designed to be both easy to write and expressive. Every programmer level
 - File I/O built-ins and strong collection utilities without extra libraries.
 - Lightweight memory footprint—Kopi uses significantly less RAM than Java or Python, making it suitable for embedded systems.
 - No external dependencies: pure Python implementation means one file to run, no virtual environment complexity.
+- Built-in JSON, HTTP, environment, and path utilities make scripting and automation fast without dependency management.
+- Parallel helpers like `parallel_map` and `parallel_filter` let you scale I/O-heavy workloads easily.
 - Declarative-style constructs like `match` and concise built-in iteration helpers provide a modern development experience.
 - Fast startup time: Kopi programs launch instantly, without JVM warmup or dependency loading delays.
+
+### Seven business-ready Kopi upgrades
+
+1. Built-in JSON and HTTP support eliminates the need for external request/serialization dependencies.
+2. `args()` and `env()` make CLI scripting and deployment automation simple for DevOps.
+3. `parallel_map()` and `parallel_filter()` let I/O-heavy workloads scale without Python GIL complexity.
+4. `path_join()` and `path_exists()` reduce shell-script friction and make filesystem tasks safer.
+5. Fast startup and minimal runtime footprint mean quick scripts and lower infrastructural cost.
+6. Pure open-source implementation avoids JVM licensing and Python virtual environment overhead.
+7. Optional type hints improve reliability without forcing strict typing on every project.
 
 ## Why Kopi beats Python's pitfalls
 
 - **Dynamic typing risks?** Optional type hints catch errors early during development, reducing runtime surprises.
 - **Dependency hell?** Kopi includes math, random, and core utilities built-in—no pip, no virtual env conflicts.
 - **Performance and memory?** Kopi is lightweight and interpreted directly, using less memory than Python or Java.
-- **GIL threading issues?** Not a concern in Kopi—no complex concurrency primitives, just simple, readable code.
+- **GIL threading issues?** Kopi supports `parallel_map` and `parallel_filter` so scripts can take advantage of concurrency for I/O-heavy tasks.
+- **Dependency packaging issues?** Kopi includes JSON, HTTP, path, and environment utilities built in, reducing the need for external packages.
 
 ## Why Kopi beats Java's baggage
 
@@ -250,8 +263,19 @@ print(numbers)
 - `replace(text, old, new)` — replace text in a string
 - `map(func, iterable)` — run a Kopi function over each item in a list
 - `filter(func, iterable)` — keep list items when a Kopi function returns true
+- `parallel_map(func, iterable)` — run a function across a list concurrently
+- `parallel_filter(func, iterable)` — filter a list concurrently
 - `zip(list1, list2, ...)` — combine multiple lists element-wise
 - `enumerate(list, start?)` — index elements in a list
+- `args()` — get command-line arguments
+- `env(name, default?)` — read environment variables
+- `json_parse(text)` — parse JSON into Kopi values
+- `json_stringify(value)` — serialize a value to JSON
+- `http_get(url)` — fetch text from a URL
+- `time_ms()` — current timestamp in milliseconds
+- `sleep(seconds)` — pause execution for a number of seconds
+- `path_join(parts...)` — build a filesystem path
+- `path_exists(path)` — check whether a file or directory exists
 - `upper(text)` — convert text to uppercase
 - `lower(text)` — convert text to lowercase
 - `type(value)` — show the type name

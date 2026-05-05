@@ -349,7 +349,7 @@ def parse_primary(tokens, i):
             is_dict = True
             i += 1
             value, i = parse_expression(tokens, i)
-            items.append((first_item, value) if isinstance(first_item, str) else (str(first_item), value))
+            items.append((first_item, value))
             while i < len(tokens) and tokens[i] == ",":
                 i += 1
                 if tokens[i] == "}":

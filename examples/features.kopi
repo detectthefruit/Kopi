@@ -99,6 +99,19 @@ let nums = [1, 2, 3, 4, 5, 6]
 print("Even numbers:", filter(is_even, nums))
 print("Map to bools:", map(is_even, nums))
 
+print("--- Environment and JSON ---")
+let user = env("USER", "guest")
+let data = {"name": user, "numbers": nums}
+let json = json_stringify(data)
+print("JSON output:", json)
+print("Parsed JSON:", json_parse(json))
+
+print("--- Parallel helpers ---")
+def double(n) {
+    return n * 2
+}
+print("Parallel map doubles:", parallel_map(double, nums))
+
 print("startswith('hello'): ", startswith(text, "hello"))
 print("endswith('world  '): ", endswith(text, "world  "))
 
