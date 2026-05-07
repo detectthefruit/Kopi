@@ -62,7 +62,8 @@ let site_scripts = [
 let routes = {
     "/": actions.home_page,
     "/about": actions.about_page,
-    "/contact": actions.contact_page
+    "/contact": actions.contact_page,
+    "/submit": actions.submit_page
 }
 
 let port = 8080

@@ -31,9 +31,23 @@ def start_web_server(port, routes, styles=None, scripts=None, module_cache=None,
     scripts = scripts or []
     module_cache = module_cache or {}
 
+    def parse_query(query):
+        import urllib.parse
+        parsed = urllib.parse.parse_qs(query, keep_blank_values=True)
+        return {k: v[0] if len(v) == 1 else v for k, v in parsed.items()}
+
+    def parse_form(body, content_type):
+        import urllib.parse
+        if content_type and "application/x-www-form-urlencoded" in content_type:
+            parsed = urllib.parse.parse_qs(body, keep_blank_values=True)
+            return {k: v[0] if len(v) == 1 else v for k, v in parsed.items()}
+        return body
+
     def create_handler(routes_dict, styles_dict, scripts_list):
-        def handler(path):
+        def handler(path, method="GET", body=None, headers=None):
+            headers = headers or {}
             clean_path = path.split("?")[0]
+            query = path.split("?", 1)[1] if "?" in path else ""
             css_html = ''
             if styles_dict:
                 css_html = f"<style>{build_css(styles_dict)}</style>"
@@ -41,10 +55,17 @@ def start_web_server(port, routes, styles=None, scripts=None, module_cache=None,
             if scripts_list:
                 for script_val in scripts_list:
                     script_html += str(script_val)
+            route_data = {}
+            if method == "POST":
+                route_data = parse_form(body or "", headers.get('Content-Type', ""))
+            elif query:
+                route_data = parse_query(query)
             if clean_path in routes_dict:
                 route_handler = routes_dict[clean_path]
                 if isinstance(route_handler, tuple) and route_handler[0] == "kopi_fn":
-                    result = call_kopi_function(route_handler, [], module_cache, load_module)
+                    params = route_handler[1]
+                    args = [route_data] if len(params) > 0 else []
+                    result = call_kopi_function(route_handler, args, module_cache, load_module)
                     if isinstance(result, str) and "<head>" in result:
                         result = result.replace("</head>", css_html + script_html + "</head>")
                     return result
@@ -62,6 +83,16 @@ def start_web_server(port, routes, styles=None, scripts=None, module_cache=None,
             self.send_header('Content-type', 'text/html; charset=utf-8')
             self.end_headers()
             self.wfile.write(str(result).encode('utf-8'))
+
+        def do_POST(self):
+            length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(length).decode('utf-8') if length > 0 else ''
+            result = handler_func(self.path, method="POST", body=body, headers=self.headers)
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(str(result).encode('utf-8'))
+
         def log_message(self, format, *args):
             pass
 

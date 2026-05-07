@@ -75,3 +75,26 @@ def contact_page() {
         footer([html("p", "Thanks for visiting")])
     ])
 }
+
+def submit_page(form) {
+    return page("Thanks", [
+        header([
+            html("h1", "Message Received"),
+            nav([
+                link("/", "Home"),
+                " • ",
+                link("/about", "About"),
+                " • ",
+                link("/contact", "Contact")
+            ])
+        ]),
+        section("main", [
+            h(2, "Thank you for your message!"),
+            p("Name: " + form["name"]),
+            p("Email: " + form["email"]),
+            p("Message content received."),
+            link("/", "← Back to Home")
+        ]),
+        footer([html("p", "We will get back to you soon.")])
+    ])
+}
