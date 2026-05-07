@@ -66,4 +66,4 @@ let routes = {
     "/submit": actions.submit_page
 }
 
-let port = 8080
+site(8080, routes, site_styles, site_scripts)

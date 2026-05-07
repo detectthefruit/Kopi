@@ -417,13 +417,13 @@ python3 main.kopi examples/web_server.kopi
 
 ### `examples/web.kopi` - Web file auto-recognition
 
-Any file named `web.kopi` is automatically treated as a website entrypoint. Define `routes`, `site_styles`, and optional `site_scripts`, then run the file and Kopi starts the site for you:
+Any file named `web.kopi` is automatically treated as a website entrypoint. Define `routes`, `site_styles`, and optional `site_scripts`, then call `site(8080, routes, site_styles, site_scripts)` to start the site:
 
 ```bash
 python3 main.kopi examples/web.kopi
 ```
 
-This example also shows how to link another Kopi module with `include("web_actions.kopi")` so page logic and scripts stay organized.
+This example also shows how to link another Kopi module with `include("web_actions.kopi")` so page logic stays simple and reusable.
 
 ### `examples/cli_automation.kopi` - Command-line scripting
 
