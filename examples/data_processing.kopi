@@ -1,0 +1,43 @@
+# Data Processing with Parallel Operations
+print("=== Parallel Data Processing ===")
+print("")
+
+# Define data processing functions
+def multiply_by_two(x) {
+    return x * 2
+}
+
+def is_greater_than_five(x) {
+    return x > 5
+}
+
+def fetch_multiple(url) {
+    return url + " (fetched)"
+}
+
+# Large dataset
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+print("Original numbers:", numbers)
+print("")
+
+# Sequential operations
+print("Doubled (sequential):", map(multiply_by_two, numbers))
+print("Filtered > 5 (sequential):", filter(is_greater_than_five, numbers))
+print("")
+
+# Parallel operations for I/O-heavy tasks
+let urls = [
+    "https://api.example.com/users/1",
+    "https://api.example.com/users/2",
+    "https://api.example.com/users/3"
+]
+
+print("Parallel operations would fetch multiple URLs concurrently")
+print("Simulated results:", parallel_map(fetch_multiple, urls))
+print("")
+
+# Zip and enumerate for combinations
+let keys = ["a", "b", "c"]
+let values = [1, 2, 3]
+print("Zipped key-values:", zip(keys, values))
+print("Enumerated values:", enumerate(values, 1))

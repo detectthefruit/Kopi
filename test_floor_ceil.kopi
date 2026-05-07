@@ -1,2 +1,0 @@
-print("floor(3.7) =", math_floor(3.7))
-print("ceil(3.2) =", math_ceil(3.2))

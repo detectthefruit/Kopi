@@ -1,0 +1,16 @@
+# Simple Web Server
+print("Creating a simple web server...")
+
+def handle_request(path) {
+    if (path == "/") {
+        return html_page("Welcome", html_h1("Welcome to Kopi!") + html_p("Your first Kopi website"))
+    }
+    if (path == "/about") {
+        return html_page("About", html_h1("About Kopi") + html_p("Kopi is a simple, fast language for learning and scripting"))
+    }
+    return html_page("404", html_h1("404 - Not Found"))
+}
+
+# Uncomment to start the server (will block):
+http_server(8080, handle_request)
+print("Web server example created. Use http_server(8080, handle_request) to start.")

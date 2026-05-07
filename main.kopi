@@ -55,13 +55,24 @@ def main():
             print(f"Error updating extension: {e}")
         return
 
+    import runtime
     source_file = sys.argv[1]
+    runtime.SOURCE_DIR = os.path.dirname(os.path.abspath(source_file))
+
     with open(source_file, "r") as f:
         code = f.read()
 
     tokens = tokenize(code)
     ast = parse(tokens)
-    run(ast)
+    global_vars, module_cache, load_module = run(ast)
+
+    if source_file.endswith("web.kopi") and isinstance(global_vars, dict):
+        if "routes" in global_vars:
+            from runtime import start_web_server
+            port = int(global_vars.get("port", 8080))
+            styles = global_vars.get("site_styles", {})
+            scripts = global_vars.get("site_scripts", [])
+            start_web_server(port, global_vars["routes"], styles, scripts, module_cache, load_module)
 
 if __name__ == "__main__":
     main()

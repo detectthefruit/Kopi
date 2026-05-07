@@ -395,8 +395,11 @@ def parse_primary(tokens, i):
     if token.startswith('"') and token.endswith('"'):
         return ("string", token[1:-1]), i + 1
 
-    if token.isdigit() or (token.startswith("-") and token[1:].isdigit()):
-        return ("number", int(token)), i + 1
+    if token.isdigit() or (token.startswith("-") and token[1:].isdigit()) or '.' in token:
+        if '.' in token:
+            return ("number", float(token)), i + 1
+        else:
+            return ("number", int(token)), i + 1
 
     if token == "true":
         return ("bool", True), i + 1

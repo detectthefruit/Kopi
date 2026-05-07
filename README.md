@@ -366,7 +366,9 @@ You can also keep the extension recommendation in your workspace so collaborator
 - `.vscode/settings.json` maps `.kopi` files to the Kopi language
 - `.vscode/extensions.json` recommends the Kopi extension
 
-## Example lesson: `examples/basics.kopi`
+## Example lessons
+
+### `examples/basics.kopi` - Interactive basics
 
 This interactive lesson teaches you the basics of Kopi by having you type in your own values! Run it and follow along:
 
@@ -380,12 +382,62 @@ The lesson covers:
 - Conditionals that make choices
 - Functions that hold reusable code
 
-Each section prompts you to enter information, then uses it in the code.
+### `examples/advanced.kopi` - Collections and iteration
 
-For a second example that shows lists, `for` loops, built-ins like `len()` and `range()`, and list indexing, run:
+Shows lists, `for` loops, built-ins like `len()` and `range()`, and list indexing:
 
 ```bash
 python3 main.kopi examples/advanced.kopi
+```
+
+### `examples/features.kopi` - Complete feature showcase
+
+Demonstrates all Kopi features including tuples, sets, slicing, ternary operators, default parameters, exception handling, assertions, and string methods:
+
+```bash
+python3 main.kopi examples/features.kopi
+```
+
+### `examples/data_processing.kopi` - Functional and parallel programming
+
+Shows functional programming patterns with `map()`, `filter()`, `zip()`, and `enumerate()`. Also demonstrates parallel operations with `parallel_map()` and `parallel_filter()` for I/O-heavy tasks:
+
+```bash
+python3 main.kopi examples/data_processing.kopi
+```
+
+### `examples/web_server.kopi` - Web development
+
+Demonstrates web server creation with HTTP routing and HTML generation. Shows how to use `http_server()`, `html_page()`, `html_h1()`, and `html_div()` built-ins to create simple web applications:
+
+```bash
+# This starts a web server on port 8080
+python3 main.kopi examples/web_server.kopi
+```
+
+### `examples/web.kopi` - Web file auto-recognition
+
+Any file named `web.kopi` is automatically treated as a website entrypoint. Define `routes`, `site_styles`, and optional `site_scripts`, then run the file and Kopi starts the site for you:
+
+```bash
+python3 main.kopi examples/web.kopi
+```
+
+This example also shows how to link another Kopi module with `include("web_actions.kopi")` so page logic and scripts stay organized.
+
+### `examples/cli_automation.kopi` - Command-line scripting
+
+Demonstrates CLI automation patterns including:
+- `args()` for command-line arguments
+- `env()` for environment variables
+- `path_join()` and `path_exists()` for filesystem operations
+- `cmd()` for shell command execution
+- `json_stringify()` and `json_parse()` for data serialization
+
+Run with arguments:
+
+```bash
+python3 main.kopi examples/cli_automation.kopi arg1 arg2
 ```
 
 ## How Kopi works

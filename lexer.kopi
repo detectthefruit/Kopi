@@ -57,6 +57,13 @@ def tokenize(source):
             i += 2
             continue
 
+        if ch.isdigit() or (ch == '.' and i + 1 < len(source) and source[i + 1].isdigit()):
+            start = i
+            while i < len(source) and (source[i].isdigit() or source[i] == '.'):
+                i += 1
+            tokens.append(source[start:i])
+            continue
+
         if ch in '()+-*/%=;{},<>![]:.':
             tokens.append(ch)
             i += 1

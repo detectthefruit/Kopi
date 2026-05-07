@@ -1,9 +1,0 @@
-print("=== Math Functions ===")
-print("sqrt(16) =", math_sqrt(16))
-print("pow(2, 8) =", math_pow(2, 8))
-print("floor(3.7) =", math_floor(3.7))
-print("ceil(3.2) =", math_ceil(3.2))
-
-print("")
-print("=== Random Functions ===")
-print("choice [1,2,3]:", random_choice([1, 2, 3]))

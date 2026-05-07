@@ -1,0 +1,39 @@
+# CLI Automation and Scripting Example
+print("=== Kopi CLI Automation ===")
+print("")
+
+# Access command-line arguments
+print("Command-line arguments:", args())
+print("")
+
+# Access environment variables
+print("USER environment variable:", env("USER"))
+print("HOME with default:", env("HOME", "/home/user"))
+print("")
+
+# Work with paths
+let base_dir = env("HOME", "/home/user")
+let config_file = path_join(base_dir, ".config", "app.json")
+print("Config file path:", config_file)
+print("Config file exists:", path_exists(config_file))
+print("")
+
+# Execute shell commands
+print("Current directory listing:")
+print(cmd("ls", "-la"))
+print("")
+
+print("=== Scripting with JSON ===")
+# Create and serialize data
+let user_data = {
+    "name": "Alice",
+    "age": 30,
+    "roles": ["admin", "editor"]
+}
+
+let json_str = json_stringify(user_data)
+print("Serialized JSON:", json_str)
+
+# Parse JSON back
+let parsed = json_parse(json_str)
+print("Parsed data:", parsed)
